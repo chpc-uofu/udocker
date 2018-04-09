@@ -24,6 +24,8 @@ udocker pulls and expands the Docker containers into a directory structure and t
 $ ./udocker setup  --execmode=R1  myfed
 ```
 
+One caveat with the user based installation is the default location of the container repository ```~/.udocker```, which can fill up users home directory quickly if not kept in check. I am not seeing any option to modify that.
+
 ## Running
 
 Pulling containers from Docker hub is very easy:
@@ -97,7 +99,12 @@ adba7d51$ which vim
 /usr/bin/vim
 ```
 
+Other examples, including MPI and GPU support are at that [User manual](https://indigo-dc.gitbooks.io/udocker/content/doc/user_manual.html).
 
+
+# More information
+[GitHub page](https://github.com/indigo-dc/udocker)
+[Documentation](https://indigo-dc.gitbooks.io/udocker/content/)
 
 
 
