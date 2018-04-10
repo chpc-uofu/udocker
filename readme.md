@@ -2,7 +2,7 @@
 
 ## Installation
 
-Installation is quite simple. Since by default bunch of files are put in ```~/.udocker```, probably the best option is to leave the installation to the user.
+User installation is quite simple. Since by default bunch of files are put in ```~/.udocker```, probably the best option is to leave the installation to the user.
 
 To install, follow https://github.com/indigo-dc/udocker/blob/master/doc/installation_manual.md, though the simplest worked:
 ```
@@ -14,6 +14,50 @@ To install, follow https://github.com/indigo-dc/udocker/blob/master/doc/installa
 ```~/.udocker``` contains bin and lib directories with dependencies, such as proot and runc, which provide the chroot capability. It also hosts the docker style local container repository.
 
 User interfaces everything with a single file command, ```udocker`, wherever it was installed in the user space - therefore adding a path to PATH or creating personal module file would be recommended.
+
+### Sys branch installation
+
+After installing local version, copy the udocker file, and ~/.udocker/bin and ~/.udocker/lib to the sys branch version.
+
+Or, alternatively, and perhaps even better, first create a module file for the new version that sets UDOCKER_BIN and UDOCKER_LIB, curl the udocker file, and run udocker install as hpcapps to install to the specified UDOCKER_BIN and UDOCKER_LIB.
+
+In the module file, we modify the PATH and set the two variables as
+```
+local PATH_VERSION = "1.1.1"
+local base = pathJoin("/uufs/chpc.utah.edu/sys/installdir/udocker", PATH_VERSION)
+prepend_path("PATH",base)
+setenv("UDOCKER_LIB",pathJoin(base,"lib"))
+setenv("UDOCKER_BIN",pathJoin(base,"bin"))
+```
+
+### Configuration
+
+Done with environment variables or udocker.conf, udocker.conf modifies the Config class attributes:
+        Config.topdir = os.getenv("UDOCKER_DIR", Config.topdir)
+        Config.bindir = os.getenv("UDOCKER_BIN", Config.bindir)
+        Config.libdir = os.getenv("UDOCKER_LIB", Config.libdir)
+        Config.reposdir = os.getenv("UDOCKER_REPOS", Config.reposdir)
+        Config.layersdir = os.getenv("UDOCKER_LAYERS", Config.layersdir)
+        Config.containersdir = os.getenv("UDOCKER_CONTAINERS",
+                                         Config.containersdir)
+        Config.dockerio_index_url = os.getenv("UDOCKER_INDEX",
+                                              Config.dockerio_index_url)
+        Config.dockerio_registry_url = os.getenv("UDOCKER_REGISTRY",
+                                                 Config.dockerio_registry_url)
+        Config.tarball = os.getenv("UDOCKER_TARBALL", Config.tarball)
+        Config.fakechroot_so = os.getenv("UDOCKER_FAKECHROOT_SO",
+                                         Config.fakechroot_so)
+        Config.tmpdir = os.getenv("UDOCKER_TMP", Config.tmpdir)
+        Config.keystore = os.getenv("UDOCKER_KEYSTORE", Config.keystore)a
+        ...
+        if not self.reposdir:
+            self.reposdir = self.topdir + "/repos"
+        if not self.layersdir:
+            self.layersdir = self.topdir + "/layers"
+        if not self.containersdir:
+            self.containersdir = self.topdir + "/containers"
+
+Our current choice is to use the environment variables. UDOCKER_BIN and UDOCKER_LIB is set by us (points to the bin and lib files of the installation in the sys branch). We leave default UDOCKER_DIR=~/.udocker, where the container pieces (repos, layers, containers) go, but, alert them to preferably set UDOCKER_DIR to another location in order to reduce chances of reaching the home directory quota.
 
 ## Implementation
 
