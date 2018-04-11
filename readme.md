@@ -141,6 +141,25 @@ adba7d51$ which vim
 /usr/bin/vim
 ```
 
+Note that I was able to install in RedHat based containers using yum, but, not in Debian (Ubuntu) based containers using apt, there I get an error like:
+```
+$ udocker run ubuntu:latest bash -c "apt update ; apt install -y cowsay"
+...
+E: Method gave invalid 400 URI Failure message: Could not switch saved set-user-ID
+```
+The relevant code in apt seems to be this:
+```
+ 3031      return _error->Errno("getresuid", "Could not get saved set-user-ID");
+ 3032       if (suid != pw->pw_uid)
+ 3033      return _error->Error("Could not switch saved set-user-ID");
+```
+
+After some digging, the cause for this is that apt by default installs as user "_apt", not as root, and this is causing trouble with the userID mapping inside of the container. The workaround is to set the apt user to root with option ```APT::Sandbox::User=root```, e.g.:
+```
+apt-get -o APT::Sandbox::User=root update
+apt-get -o APT::Sandbox::User=root install vim
+```
+
 Other examples, including MPI and GPU support are at that [User manual](https://indigo-dc.gitbooks.io/udocker/content/doc/user_manual.html).
 
 
