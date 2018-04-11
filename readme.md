@@ -33,29 +33,27 @@ setenv("UDOCKER_BIN",pathJoin(base,"bin"))
 ### Configuration
 
 Done with environment variables or udocker.conf, udocker.conf modifies the Config class attributes:
-*       Config.topdir = os.getenv("UDOCKER_DIR", Config.topdir)
-*       Config.bindir = os.getenv("UDOCKER_BIN", Config.bindir)
-*       Config.libdir = os.getenv("UDOCKER_LIB", Config.libdir)
-*       Config.reposdir = os.getenv("UDOCKER_REPOS", Config.reposdir)
-*       Config.layersdir = os.getenv("UDOCKER_LAYERS", Config.layersdir)
-*       Config.containersdir = os.getenv("UDOCKER_CONTAINERS",
-*                                        Config.containersdir)
-*       Config.dockerio_index_url = os.getenv("UDOCKER_INDEX",
-*                                             Config.dockerio_index_url)
-*       Config.dockerio_registry_url = os.getenv("UDOCKER_REGISTRY",
-*                                                Config.dockerio_registry_url)
-*       Config.tarball = os.getenv("UDOCKER_TARBALL", Config.tarball)
-*       Config.fakechroot_so = os.getenv("UDOCKER_FAKECHROOT_SO",
-*                                        Config.fakechroot_so)
-*       Config.tmpdir = os.getenv("UDOCKER_TMP", Config.tmpdir)
-*       Config.keystore = os.getenv("UDOCKER_KEYSTORE", Config.keystore)a
-*       ...
-*       if not self.reposdir:
-*           self.reposdir = self.topdir + "/repos"
-*       if not self.layersdir:
-*           self.layersdir = self.topdir + "/layers"
-*       if not self.containersdir:
-*           self.containersdir = self.topdir + "/containers"
+```
+       Config.topdir = os.getenv("UDOCKER_DIR", Config.topdir)
+       Config.bindir = os.getenv("UDOCKER_BIN", Config.bindir)
+       Config.libdir = os.getenv("UDOCKER_LIB", Config.libdir)
+       Config.reposdir = os.getenv("UDOCKER_REPOS", Config.reposdir)
+       Config.layersdir = os.getenv("UDOCKER_LAYERS", Config.layersdir)
+       Config.containersdir = os.getenv("UDOCKER_CONTAINERS",i Config.containersdir)
+       Config.dockerio_index_url = os.getenv("UDOCKER_INDEX", Config.dockerio_index_url)
+       Config.dockerio_registry_url = os.getenv("UDOCKER_REGISTRY", Config.dockerio_registry_url)
+       Config.tarball = os.getenv("UDOCKER_TARBALL", Config.tarball)
+       Config.fakechroot_so = os.getenv("UDOCKER_FAKECHROOT_SO", Config.fakechroot_so)
+       Config.tmpdir = os.getenv("UDOCKER_TMP", Config.tmpdir)
+       Config.keystore = os.getenv("UDOCKER_KEYSTORE", Config.keystore)a
+       ...
+       if not self.reposdir:
+           self.reposdir = self.topdir + "/repos"
+       if not self.layersdir:
+           self.layersdir = self.topdir + "/layers"
+       if not self.containersdir:
+           self.containersdir = self.topdir + "/containers"
+```
 
 Our current choice is to use the environment variables. UDOCKER_BIN and UDOCKER_LIB is set by us (points to the bin and lib files of the installation in the sys branch). We leave default UDOCKER_DIR=~/.udocker, where the container pieces (repos, layers, containers) go, but, alert them to preferably set UDOCKER_DIR to another location in order to reduce chances of reaching the home directory quota.
 
