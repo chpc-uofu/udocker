@@ -2,9 +2,7 @@
 
 ## Installation
 
-User installation is quite simple. Since by default bunch of files are put in ```~/.udocker```, probably the best option is to leave the installation to the user.
-
-To install, follow https://github.com/indigo-dc/udocker/blob/master/doc/installation_manual.md, though the simplest worked:
+First install in user space, following https://github.com/indigo-dc/udocker/blob/master/doc/installation_manual.md, though the simplest worked:
 ```
   curl https://raw.githubusercontent.com/indigo-dc/udocker/master/udocker.py > udocker
   chmod u+rx ./udocker
@@ -13,13 +11,15 @@ To install, follow https://github.com/indigo-dc/udocker/blob/master/doc/installa
 
 ```~/.udocker``` contains bin and lib directories with dependencies, such as proot and runc, which provide the chroot capability. It also hosts the docker style local container repository.
 
-User interfaces everything with a single file command, ```udocker`, wherever it was installed in the user space - therefore adding a path to PATH or creating personal module file would be recommended.
+User interfaces everything with a single file command, ```udocker```, wherever it was installed in the user space - therefore adding a path to PATH or creating personal module file would be recommended.
 
 ### Sys branch installation
 
-After installing local version, copy the udocker file, and ~/.udocker/bin and ~/.udocker/lib to the sys branch version.
+For general availability, the following works to install udocker system-wide.
 
-Or, alternatively, and perhaps even better, first create a module file for the new version that sets UDOCKER_BIN and UDOCKER_LIB, curl the udocker file, and run udocker install as hpcapps to install to the specified UDOCKER_BIN and UDOCKER_LIB.
+After installing local version, copy the ```udocker``` file, and ```~/.udocker/bin``` and ```~/.udocker/lib``` to the sys branch version.
+
+Or, alternatively, and perhaps even better - without the need for user space installation first, first create a module file for the new version that sets UDOCKER_BIN and UDOCKER_LIB, curl the udocker file to the destination in the sys branch, and run ```udocker install``` as hpcapps to install to the specified UDOCKER_BIN and UDOCKER_LIB.
 
 In the module file, we modify the PATH and set the two variables as
 ```
@@ -30,7 +30,7 @@ setenv("UDOCKER_LIB",pathJoin(base,"lib"))
 setenv("UDOCKER_BIN",pathJoin(base,"bin"))
 ```
 
-### Configuration
+### udocker configuration
 
 Done with environment variables or udocker.conf, udocker.conf modifies the Config class attributes:
 ```
@@ -39,7 +39,7 @@ Done with environment variables or udocker.conf, udocker.conf modifies the Confi
        Config.libdir = os.getenv("UDOCKER_LIB", Config.libdir)
        Config.reposdir = os.getenv("UDOCKER_REPOS", Config.reposdir)
        Config.layersdir = os.getenv("UDOCKER_LAYERS", Config.layersdir)
-       Config.containersdir = os.getenv("UDOCKER_CONTAINERS",i Config.containersdir)
+       Config.containersdir = os.getenv("UDOCKER_CONTAINERS", Config.containersdir)
        Config.dockerio_index_url = os.getenv("UDOCKER_INDEX", Config.dockerio_index_url)
        Config.dockerio_registry_url = os.getenv("UDOCKER_REGISTRY", Config.dockerio_registry_url)
        Config.tarball = os.getenv("UDOCKER_TARBALL", Config.tarball)
@@ -59,14 +59,14 @@ Our current choice is to use the environment variables. UDOCKER_BIN and UDOCKER_
 
 ## Implementation
 
-udocker is written in Python and runs on CentOS7 stock Python. 
+udocker is written in Python and runs on CentOS7 stock Python 2. Currently it does not support Python3. A suggested workaround is to change the runner in the udocker script file from python to python2. We have done this at CHPC.
 
 udocker pulls and expands the Docker containers into a directory structure and then chroots to them. By default, it does chroot with [proot](https://proot-me.github.io/), which does not introduce any new SetUID or other escallation. Other options are Fakeroot, runC and Singularity, but, I would think that for our purposes the default should be sufficient. The chroot method can be changed with ```--execmode```. This can be also made into a new default, e.g. to change to runC:
 ```
 $ ./udocker setup  --execmode=R1  myfed
 ```
 
-One caveat with the user based installation is the default location of the container repository ```~/.udocker```, which can fill up users home directory quickly if not kept in check. I am not seeing any option to modify that.
+One caveat with the user based installation is the default location of the container repository ```~/.udocker```, which can fill up users home directory quickly if not kept in check. We instruct users to set UDOCKER_DIR to a place that has larger size allowance, or, at lease, where it is more visible so one is not surprised when quota is exceeded and most of the space taken is in a hidden ```~/.udocker``` directory.
 
 ## Running
 
