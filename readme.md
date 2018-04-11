@@ -116,7 +116,9 @@ and then run them (which will be faster than running from Dockerhub, even with t
 2018-04-09 23:04:44.503864: I tensorflow/core/platform/cpu_feature_guard.cc:140] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 AVX512F FMA
 ```
 
-The udocker documentation maintains that user can be root inside the container ```--user=root``` option and modify files as root in the container (e.g. install new packages), but, this runs into permission problems with Ubuntus apt-get. On the other hand, this has worked with Fedora, e.g.:
+## Modifying existing containers
+
+The udocker documentation maintains that user can be root inside the container ```--user=root``` option and modify files as root in the container (e.g. install new packages), but, this runs into permission problems with Ubuntus apt-get (see below for how to work around that). On the other hand, this has worked with Fedora, e.g.:
 ```
 $ ./udocker run fedora:latest
 a92387cd# which vim
